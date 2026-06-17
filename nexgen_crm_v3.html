@@ -1,0 +1,804 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0a0f1e;color:#e2e8f0;min-height:600px;font-size:13px}
+input,select,textarea{background:#1a2035;border:1px solid #2a3a5c;color:#e2e8f0;border-radius:5px;padding:7px 11px;width:100%;font-size:13px;outline:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:#00c9a7;box-shadow:0 0 0 2px rgba(0,201,167,.15)}
+textarea{resize:vertical;min-height:56px}
+select option{background:#1a2035}
+label{font-size:11px;color:#94a3b8;margin-bottom:3px;display:block;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.btn{padding:7px 15px;border-radius:5px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;font-family:inherit;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,#00c9a7,#0ea5e9);color:#fff}
+.btn-primary:hover{opacity:.88}
+.btn-secondary{background:#1a2035;border:1px solid #2a3a5c;color:#94a3b8}
+.btn-secondary:hover{border-color:#00c9a7;color:#00c9a7}
+.btn-danger{background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b}
+.btn-danger:hover{background:#991b1b}
+.btn-sm{padding:4px 10px;font-size:11px}
+.btn-wa{background:#25d366;color:#fff}
+.btn-wa:hover{background:#1da851}
+.btn-mail{background:#2563eb;color:#fff}
+.btn-mail:hover{background:#1d4ed8}
+.hidden{display:none!important}
+
+/* ── LOGIN ── */
+#loginPage{display:flex;min-height:600px;background:#0a0f1e}
+.ll{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;background:linear-gradient(135deg,#0a0f1e 0%,#0f1f3d 100%);border-right:1px solid #1a2a4a}
+.lr{flex:1;display:flex;align-items:center;justify-content:center;padding:40px}
+.lcard{width:100%;max-width:340px}
+.lcard h2{font-size:21px;font-weight:600;color:#f1f5f9;margin-bottom:4px}
+.lcard p{font-size:12px;color:#64748b;margin-bottom:24px}
+.fg{margin-bottom:14px}
+.hint{font-size:11px;color:#475569;margin-top:18px;text-align:center}
+.lerr{color:#f87171;font-size:12px;margin-top:8px;text-align:center;display:none}
+
+/* ── TOPBAR ── */
+#mainApp{display:none;flex-direction:column;min-height:600px}
+.topbar{height:48px;background:#0d1425;border-bottom:1px solid #1a2a4a;display:flex;align-items:stretch;padding:0 12px;gap:2px;position:relative;z-index:200}
+.nav-item{display:flex;align-items:center;padding:0 14px;font-size:13px;font-weight:500;color:#94a3b8;cursor:pointer;position:relative;border-bottom:2px solid transparent;user-select:none;white-space:nowrap;transition:all .15s}
+.nav-item:hover,.nav-item.open{color:#00c9a7;border-bottom-color:#00c9a7;background:rgba(0,201,167,.06)}
+.nav-item .caret{font-size:9px;margin-left:5px;opacity:.6}
+.dropdown{display:none;position:absolute;top:100%;left:0;background:#0f1829;border:1px solid #1e3050;border-radius:6px;min-width:200px;z-index:300;padding:4px 0;box-shadow:0 8px 32px rgba(0,0,0,.6);margin-top:1px}
+.nav-item.open>.dropdown{display:block}
+.dd-item{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;font-size:13px;color:#94a3b8;cursor:pointer;white-space:nowrap;transition:all .1s;position:relative}
+.dd-item:hover{background:#1a2a4a;color:#00c9a7}
+.dd-item .sub-menu{display:none;position:absolute;top:-4px;left:100%;background:#0f1829;border:1px solid #1e3050;border-radius:6px;min-width:190px;z-index:301;padding:4px 0;box-shadow:0 8px 32px rgba(0,0,0,.6);margin-left:1px}
+.dd-item.has-sub:hover>.sub-menu{display:block}
+.dd-item .sub-menu .dd-item{justify-content:flex-start}
+.dd-sep{height:1px;background:#1a2a4a;margin:4px 0}
+.ts{flex:1}
+.ubtn{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#00c9a7,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;cursor:pointer;position:relative;align-self:center}
+.ubtn .umenu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#0f1829;border:1px solid #1e3050;border-radius:6px;min-width:180px;z-index:300;padding:4px 0;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+.ubtn.open .umenu{display:block}
+.uemail{font-size:11px;color:#475569;padding:8px 16px 8px;border-bottom:1px solid #1a2a4a;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.umitem{padding:9px 16px;font-size:13px;color:#94a3b8;cursor:pointer;display:flex;align-items:center;gap:8px}
+.umitem:hover{background:#1a2a4a;color:#00c9a7}
+
+/* ── CONTENT ── */
+.content{flex:1;padding:18px;background:#0a0f1e;overflow-y:auto}
+.bc{font-size:11px;color:#64748b;margin-bottom:14px;letter-spacing:.3px}
+.bc span{color:#00c9a7}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.pt{font-size:17px;font-weight:600;color:#f1f5f9}
+.card{background:#0d1425;border:1px solid #1a2a4a;border-radius:8px;padding:16px;margin-bottom:12px}
+.ctitle{font-size:12px;font-weight:600;color:#64748b;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid #1a2a4a;text-transform:uppercase;letter-spacing:.5px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.s2{grid-column:span 2}
+.s3{grid-column:span 3}
+.dt{width:100%;border-collapse:collapse}
+.dt th{background:#0a0f1e;color:#64748b;font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid #1a2a4a;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.dt td{padding:8px 12px;border-bottom:1px solid #0f1a2e;color:#cbd5e1;vertical-align:middle}
+.dt tr:hover td{background:#0d1425}
+.bx{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.bx-g{background:#064e3b;color:#34d399}
+.bx-b{background:#1e3a5f;color:#60a5fa}
+.bx-p{background:#4a2c6a;color:#c084fc}
+.bx-o{background:#78350f;color:#fbbf24}
+.ab{display:flex;gap:5px;flex-wrap:wrap}
+.empty{text-align:center;padding:28px;color:#475569}
+.it{width:100%;border-collapse:collapse}
+.it th{background:#0a0f1e;color:#64748b;font-weight:600;padding:7px 9px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #1a2a4a}
+.it td{padding:7px 9px;border-bottom:1px solid #0f1a2e;color:#cbd5e1}
+.tr{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#94a3b8}
+.tr.grand{border-top:1px solid #1a2a4a;margin-top:6px;padding-top:8px;font-size:14px;font-weight:700;color:#00c9a7}
+.fa{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
+.qbadge{display:inline-block;background:linear-gradient(135deg,#064e3b,#0f2a3a);border:1px solid #00c9a7;color:#00c9a7;padding:2px 10px;border-radius:14px;font-size:11px;font-weight:700}
+
+/* ── MODAL ── */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:500}
+.mo.open{display:flex}
+.mb{background:#0d1425;border:1px solid #1a2a4a;border-radius:10px;width:500px;max-width:97vw;padding:20px;max-height:90vh;overflow-y:auto}
+.mt{font-size:15px;font-weight:600;color:#f1f5f9;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.mc{background:none;border:none;color:#64748b;cursor:pointer;font-size:22px;line-height:1}
+.mc:hover{color:#f1f5f9}
+.ma{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+
+<div id="loginPage">
+  <div class="ll">
+    <div style="text-align:center">
+      <img src="NexGen_Corenova_Logo_Clean.png" alt="NexGen Corenova" --style="max-width:280px;width:100%;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,.4)"--/>
+      <p style="color:#00c9a7;font-size:11px;margin-top:10px;letter-spacing:1.5px">Innovate. | Integrate. | Elevate.</p>
+    </div>
+  </div>
+  <div class="lr">
+    <div class="lcard">
+      <h2>Welcome back</h2>
+      <p>Sign in to NexGen Corenova CRM</p>
+      <div class="fg"><label>Email address</label><input type="email" id="lEmail" placeholder="Enter your email"/></div>
+      <div class="fg"><label>Password</label><input type="password" id="lPass" placeholder="Enter your password"/></div>
+      <div id="lErr" class="lerr">Invalid credentials. Please try again.</div>
+      <button class="btn btn-primary" style="width:100%;padding:9px;margin-top:4px" onclick="doLogin()">Sign in →</button>
+      <p class="hint">NexGen Corenova Tech Solutions · CRM v3.0</p>
+    </div>
+  </div>
+</div>
+
+<div id="mainApp">
+  <div class="topbar">
+    <div class="nav-item" id="nCRM" onclick="toggleNav('nCRM',event)">
+      CRM <span class="caret">▼</span>
+      <div class="dropdown">
+        <div class="dd-item" onclick="goTo('salesFollowUp')"><i class="ti ti-trending-up" aria-hidden="true"></i>&nbsp; Sales Follow Up</div>
+        <div class="dd-item has-sub">
+          <span><i class="ti ti-file-invoice" aria-hidden="true"></i>&nbsp; Quotation</span><span style="font-size:10px;color:#475569">▶</span>
+          <div class="sub-menu">
+            <div class="dd-item" onclick="goTo('createQuotation')"><i class="ti ti-plus" aria-hidden="true"></i>&nbsp; Create Quotation</div>
+            <div class="dd-item" onclick="goTo('searchQuotation')"><i class="ti ti-search" aria-hidden="true"></i>&nbsp; Search Quotation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-item" id="nAccounts" onclick="toggleNav('nAccounts',event)">
+      Accounts <span class="caret">▼</span>
+      <div class="dropdown">
+        <div class="dd-item has-sub">
+          <span><i class="ti ti-receipt" aria-hidden="true"></i>&nbsp; Invoicing</span><span style="font-size:10px;color:#475569">▶</span>
+          <div class="sub-menu">
+            <div class="dd-item" onclick="goTo('createInvoice')"><i class="ti ti-plus" aria-hidden="true"></i>&nbsp; Create Invoice</div>
+            <div class="dd-item" onclick="goTo('searchInvoice')"><i class="ti ti-search" aria-hidden="true"></i>&nbsp; Search Invoice</div>
+            <div class="dd-item" onclick="goTo('invoiceFromQuote')"><i class="ti ti-arrows-exchange" aria-hidden="true"></i>&nbsp; Convert from Quotation</div>
+          </div>
+        </div>
+        <div class="dd-item" onclick="goTo('customers')"><i class="ti ti-building" aria-hidden="true"></i>&nbsp; Customers</div>
+        <div class="dd-item" onclick="goTo('payments')"><i class="ti ti-cash" aria-hidden="true"></i>&nbsp; Payments</div>
+      </div>
+    </div>
+    <div class="nav-item" id="nAdmin" onclick="toggleNav('nAdmin',event)">
+      Admin <span class="caret">▼</span>
+      <div class="dropdown">
+        <div class="dd-item" onclick="goTo('users')"><i class="ti ti-users" aria-hidden="true"></i>&nbsp; Users</div>
+        <div class="dd-sep"></div>
+        <div class="dd-item has-sub">
+          <span><i class="ti ti-settings" aria-hidden="true"></i>&nbsp; Settings</span><span style="font-size:10px;color:#475569">▶</span>
+          <div class="sub-menu">
+            <div class="dd-item" onclick="goTo('quotationSetting')"><i class="ti ti-file-invoice" aria-hidden="true"></i>&nbsp; Quotation Setting</div>
+            <div class="dd-item" onclick="goTo('invoiceSetting')"><i class="ti ti-receipt" aria-hidden="true"></i>&nbsp; Invoice Setting</div>
+          </div>
+        </div>
+        <div class="dd-item" onclick="goTo('bankDetails')"><i class="ti ti-building-bank" aria-hidden="true"></i>&nbsp; Bank Details</div>
+      </div>
+    </div>
+    <div class="ts"></div>
+    <div class="ubtn" id="uBtn" onclick="toggleUser(event)"><span id="uInitial">A</span>
+      <div class="umenu">
+        <div class="uemail" id="uEmailLabel"></div>
+        <div class="umitem" onclick="goTo('dashboard')"><i class="ti ti-home" aria-hidden="true"></i> Home</div>
+        <div class="umitem" onclick="doLogout()"><i class="ti ti-logout" aria-hidden="true"></i> Sign Out</div>
+      </div>
+    </div>
+  </div>
+  <div class="content" id="MC"></div>
+</div>
+
+<!-- Item Modal -->
+<div class="mo" id="mItem">
+  <div class="mb">
+    <div class="mt"><span id="mItemTitle">Add Line Item</span><button class="mc" onclick="closeModal('mItem')">×</button></div>
+    <div class="fg2" style="margin-bottom:10px">
+      <div style="grid-column:span 2"><label>Charge Description</label><input id="iDesc" placeholder="e.g. DS-2CE56DOT Camera"/></div>
+      <div><label>HSN Code</label><input id="iHsn" placeholder="e.g. 85258020"/></div>
+      <div><label>Unit</label><select id="iUnit"><option>NOS</option><option>NO</option><option>ROL</option><option>SET</option><option>MTR</option><option>KG</option><option>PCS</option><option>BOX</option></select></div>
+      <div><label>Quantity</label><input id="iQty" type="number" min="1" value="1" oninput="calcIT()"/></div>
+      <div><label>Rate (₹)</label><input id="iRate" type="number" placeholder="0.00" oninput="calcIT()"/></div>
+      <div><label>GST %</label><select id="iGst" onchange="calcIT()"><option value="0">0%</option><option value="5">5%</option><option value="9" selected>9%</option><option value="12">12%</option><option value="18">18%</option><option value="28">28%</option></select></div>
+      <div><label>Total (₹)</label><input id="iTotal" readonly style="background:#0a0f1e;color:#00c9a7;font-weight:700"/></div>
+    </div>
+    <div class="ma"><button class="btn btn-secondary" onclick="closeModal('mItem')">Cancel</button><button class="btn btn-primary" onclick="saveItem()">Save Item</button></div>
+  </div>
+</div>
+
+<!-- Company Modal -->
+<div class="mo" id="mCo">
+  <div class="mb">
+    <div class="mt"><span id="mCoTitle">Add Company</span><button class="mc" onclick="closeModal('mCo')">×</button></div>
+    <div class="fg" style="margin-bottom:8px"><label>Company Name</label><input id="coName" placeholder="NexGen Corenova Tech Solutions"/></div>
+    <div class="fg" style="margin-bottom:8px"><label>Address</label><textarea id="coAddr" placeholder="Full address, city, state, pin"></textarea></div>
+    <div class="fg2" style="margin-bottom:8px">
+      <div><label>GST Number</label><input id="coGst" placeholder="33XXXXXXX"/></div>
+      <div><label>Phone</label><input id="coPhone" placeholder="+91-XXXXXXXXXX"/></div>
+      <div><label>Email</label><input id="coEmail" placeholder="admin@company.com"/></div>
+      <div><label>Website</label><input id="coWeb" placeholder="www.company.com"/></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:8px"><input type="checkbox" id="coDef" style="width:auto;accent-color:#00c9a7"/><label for="coDef" style="margin:0;cursor:pointer;text-transform:none;font-size:13px;letter-spacing:0">Set as Default</label></div>
+    <div class="ma"><button class="btn btn-secondary" onclick="closeModal('mCo')">Cancel</button><button class="btn btn-primary" onclick="saveCo()">Save</button></div>
+  </div>
+</div>
+
+<!-- Bank Modal -->
+<div class="mo" id="mBank">
+  <div class="mb">
+    <div class="mt"><span id="mBankTitle">Add Bank Account</span><button class="mc" onclick="closeModal('mBank')">×</button></div>
+    <div class="fg2" style="margin-bottom:8px">
+      <div><label>Bank Name</label><input id="bkName" placeholder="e.g. HDFC Bank"/></div>
+      <div><label>Account Holder Name</label><input id="bkHolder" placeholder="NexGen Corenova Tech Solutions"/></div>
+      <div><label>Account Number</label><input id="bkAcc" placeholder="XXXXXXXXXXXX"/></div>
+      <div><label>IFSC Code</label><input id="bkIfsc" placeholder="HDFC0001234"/></div>
+      <div><label>Account Type</label><select id="bkType"><option>Current</option><option>Savings</option></select></div>
+      <div><label>Branch</label><input id="bkBranch" placeholder="Chennai - Anna Salai"/></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:8px"><input type="checkbox" id="bkDef" style="width:auto;accent-color:#00c9a7"/><label for="bkDef" style="margin:0;cursor:pointer;text-transform:none;font-size:13px;letter-spacing:0">Set as Default</label></div>
+    <div class="ma"><button class="btn btn-secondary" onclick="closeModal('mBank')">Cancel</button><button class="btn btn-primary" onclick="saveBank()">Save</button></div>
+  </div>
+</div>
+
+<!-- Follow-up Modal -->
+<div class="mo" id="mFU">
+  <div class="mb">
+    <div class="mt"><span id="mFUTitle">Add Follow Up</span><button class="mc" onclick="closeModal('mFU')">×</button></div>
+    <div class="fg2" style="margin-bottom:8px">
+      <div><label>Date</label><input type="date" id="fuDate"/></div>
+      <div><label>Status</label><select id="fuStatus"><option>Open</option><option>Pending</option><option>Closed</option></select></div>
+      <div style="grid-column:span 2"><label>Customer Name</label><input id="fuCust" placeholder="Customer name"/></div>
+      <div style="grid-column:span 2"><label>Contact Number</label><input id="fuPhone" placeholder="+91 XXXXX XXXXX"/></div>
+      <div style="grid-column:span 2"><label>Notes</label><textarea id="fuNotes" placeholder="Discussion notes..."></textarea></div>
+      <div style="grid-column:span 2"><label>Next Action</label><input id="fuAction" placeholder="e.g. Send quotation"/></div>
+    </div>
+    <div class="ma"><button class="btn btn-secondary" onclick="closeModal('mFU')">Cancel</button><button class="btn btn-primary" onclick="saveFU()">Save</button></div>
+  </div>
+</div>
+
+<!-- Customer Modal -->
+<div class="mo" id="mCust">
+  <div class="mb">
+    <div class="mt"><span id="mCustTitle">Add Customer</span><button class="mc" onclick="closeModal('mCust')">×</button></div>
+    <div class="fg2" style="margin-bottom:8px">
+      <div style="grid-column:span 2"><label>Company Name</label><input id="cuName" placeholder="Company / Customer name"/></div>
+      <div><label>Contact Person</label><input id="cuContact" placeholder="Name"/></div>
+      <div><label>Phone</label><input id="cuPhone" placeholder="+91 XXXXX XXXXX"/></div>
+      <div><label>Email</label><input id="cuEmail" placeholder="email@customer.com"/></div>
+      <div><label>GSTIN</label><input id="cuGst" placeholder="33XXXXXXXX"/></div>
+      <div style="grid-column:span 2"><label>Address</label><textarea id="cuAddr" placeholder="Full address"></textarea></div>
+    </div>
+    <div class="ma"><button class="btn btn-secondary" onclick="closeModal('mCust')">Cancel</button><button class="btn btn-primary" onclick="saveCust()">Save</button></div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="mo" id="mPay">
+  <div class="mb">
+    <div class="mt"><span id="mPayTitle">Add Payment</span><button class="mc" onclick="closeModal('mPay')">×</button></div>
+    <div class="fg2" style="margin-bottom:8px">
+      <div><label>Date</label><input type="date" id="pyDate"/></div>
+      <div><label>Amount (₹)</label><input id="pyAmt" type="number" placeholder="0.00"/></div>
+      <div style="grid-column:span 2"><label>Customer</label><input id="pyCust" placeholder="Customer name"/></div>
+      <div><label>Invoice / Reference</label><input id="pyRef" placeholder="INV-2025-001"/></div>
+      <div><label>Payment Mode</label><select id="pyMode"><option>Bank Transfer</option><option>Cheque</option><option>Cash</option><option>UPI</option><option>NEFT</option><option>RTGS</option></select></div>
+      <div style="grid-column:span 2"><label>Notes</label><input id="pyNotes" placeholder="Optional note"/></div>
+    </div>
+    <div class="ma"><button class="btn btn-secondary" onclick="closeModal('mPay')">Cancel</button><button class="btn btn-primary" onclick="savePay()">Save</button></div>
+  </div>
+</div>
+
+<!-- User Modal -->
+<div class="mo" id="mUser">
+  <div class="mb">
+    <div class="mt"><span id="mUserTitle">Add User</span><button class="mc" onclick="closeModal('mUser')">×</button></div>
+    <div class="fg2" style="margin-bottom:8px">
+      <div><label>Full Name</label><input id="usName" placeholder="Full name"/></div>
+      <div><label>Role</label><select id="usRole"><option>Admin</option><option>Manager</option><option>Sales</option><option>Accounts</option></select></div>
+      <div style="grid-column:span 2"><label>Email (Login ID)</label><input id="usEmail" type="email" placeholder="user@nexgencorenova.tech"/></div>
+      <div><label>Password</label><input id="usPass" type="password" placeholder="Set password"/></div>
+      <div><label>Phone</label><input id="usPhone" placeholder="+91 XXXXX XXXXX"/></div>
+    </div>
+    <div class="ma"><button class="btn btn-secondary" onclick="closeModal('mUser')">Cancel</button><button class="btn btn-primary" onclick="saveUser()">Save User</button></div>
+  </div>
+</div>
+
+<script>
+const LOGO = "data:image/jpeg;base64,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";
+document.getElementById('logoImg').src = LOGO;
+
+// ── State ───────────────────────────────────────────────────────────────────────
+let currentUser = null;
+let users = [{name:'Admin',email:'admin@nexgencorenova.tech',pass:'admin123',role:'Admin',phone:'+91-8637483026'}];
+let quotations = [
+  {id:'QT-2025-001',date:'2025-06-01',validity:'2025-06-15',customer:'Rajesh Logistics Pvt Ltd',address:'No.12, Anna Salai, Chennai 600002',gstin:'33AAAAA1234A1Z5',notes:'Delivery within 7 working days.',terms:'1. Warranty from manufacturer only.\n2. 50% advance, balance on delivery.',bank:'',status:'Active',total:19915,items:[{desc:'DS-2CE56DOT CAM',hsn:'85258020',qty:2,unit:'NOS',rate:2250,gst:9,total:4905},{desc:'DS-2CE56DOT DVR',hsn:'85219090',qty:1,unit:'NO',rate:4800,gst:9,total:5232}]}
+];
+let invoices = [];
+let items = []; let editItemIdx = -1;
+let coType=''; let editCoIdx=-1;
+let editBkIdx=-1; let editFUIdx=-1; let editCustIdx=-1; let editPayIdx=-1; let editUserIdx=-1;
+let quotationCos=[{name:'NexGen Corenova Tech Solutions',address:'Chennai, Tamil Nadu - 600001',gst:'33XXXXXXXX1234X',phone:'+91-8637483026',email:'admin@nexgencorenova.tech',web:'nexgencorenova.tech',isDefault:true}];
+let invoiceCos=[{name:'NexGen Corenova Tech Solutions',address:'Chennai, Tamil Nadu - 600001',gst:'33XXXXXXXX1234X',phone:'+91-8637483026',email:'admin@nexgencorenova.tech',web:'nexgencorenova.tech',isDefault:true}];
+let banks=[{name:'HDFC Bank',holder:'NexGen Corenova Tech Solutions',acc:'50200012345678',ifsc:'HDFC0001234',type:'Current',branch:'Chennai - Anna Salai',isDefault:true}];
+let followUps=[{date:'2025-06-05',customer:'Rajesh Logistics',phone:'+91 98400 12345',notes:'Interested in CCTV + ERP package',action:'Send quotation',status:'Open'},{date:'2025-06-07',customer:'SunTech Warehousing',phone:'+91 90000 56789',notes:'Requires WMS integration demo',action:'Schedule demo',status:'Pending'}];
+let customers=[{name:'Rajesh Logistics Pvt Ltd',contact:'Rajesh Kumar',phone:'+91 98400 12345',email:'rajesh@rajeshlogistics.com',gst:'33AAAAA1234A1Z5',address:'No.12, Anna Salai, Chennai 600002'},{name:'SunTech Warehousing',contact:'Sunil Patel',phone:'+91 90000 56789',email:'sunil@suntechware.com',gst:'',address:'Plot 45, SIDCO Estate, Chennai 600099'}];
+let payments=[{date:'2025-06-04',customer:'Rajesh Logistics Pvt Ltd',ref:'INV-2025-001',amount:19915,mode:'Bank Transfer',notes:'Full payment received'}];
+
+// ── Auth ────────────────────────────────────────────────────────────────────────
+function doLogin(){
+  const e=document.getElementById('lEmail').value.trim(),p=document.getElementById('lPass').value;
+  const u=users.find(u=>u.email===e&&u.pass===p);
+  const err=document.getElementById('lErr');
+  if(!u){err.style.display='block';return;}
+  err.style.display='none';
+  currentUser=u;
+  document.getElementById('uEmailLabel').textContent=u.email;
+  document.getElementById('uInitial').textContent=u.name.charAt(0).toUpperCase();
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('mainApp').style.display='flex';
+  renderDashboard(MC());
+}
+function doLogout(){document.getElementById('loginPage').style.display='flex';document.getElementById('mainApp').style.display='none';currentUser=null;}
+function MC(){return document.getElementById('MC');}
+
+// ── Nav ─────────────────────────────────────────────────────────────────────────
+function toggleNav(id,e){e.stopPropagation();const el=document.getElementById(id);const was=el.classList.contains('open');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('open'));document.getElementById('uBtn').classList.remove('open');if(!was)el.classList.add('open');}
+function toggleUser(e){e.stopPropagation();const el=document.getElementById('uBtn');const was=el.classList.contains('open');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('open'));if(!was)el.classList.add('open');else el.classList.remove('open');}
+function stopP(e){e.stopPropagation();}
+document.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('open'));document.getElementById('uBtn').classList.remove('open');});
+
+function goTo(sec){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('open'));
+  document.getElementById('uBtn').classList.remove('open');
+  const c=MC();
+  if(sec==='dashboard') renderDashboard(c);
+  else if(sec==='salesFollowUp') renderFollowUp(c);
+  else if(sec==='createQuotation'){items=[];renderDocForm(c,'quotation',null,-1);}
+  else if(sec==='searchQuotation') renderSearchDoc(c,'quotation');
+  else if(sec==='createInvoice'){items=[];renderDocForm(c,'invoice',null,-1);}
+  else if(sec==='searchInvoice') renderSearchDoc(c,'invoice');
+  else if(sec==='invoiceFromQuote') renderConvert(c);
+  else if(sec==='customers') renderCustomers(c);
+  else if(sec==='payments') renderPayments(c);
+  else if(sec==='users') renderUsers(c);
+  else if(sec==='quotationSetting') renderCoSetting(c,'quotation');
+  else if(sec==='invoiceSetting') renderCoSetting(c,'invoice');
+  else if(sec==='bankDetails') renderBanks(c);
+}
+
+// ── Dashboard ───────────────────────────────────────────────────────────────────
+function renderDashboard(c){
+  c.innerHTML=`<div class="ph"><div class="pt">Home</div></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:14px">
+    ${[['Quotations',quotations.length],['Invoices',invoices.length],['Customers',customers.length],['Payments',payments.length]].map(([l,v])=>`<div class="card" style="padding:14px"><div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">${l}</div><div style="font-size:24px;font-weight:700;color:#00c9a7">${v}</div></div>`).join('')}
+  </div>
+  <div class="card"><div class="ctitle">Recent Quotations</div>
+  <table class="dt"><thead><tr><th>Quote No</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+  <tbody>${quotations.slice(-5).map(q=>`<tr><td><span class="qbadge">${q.id}</span></td><td>${q.customer}</td><td>${q.date}</td><td style="color:#00c9a7;font-weight:600">₹${q.total.toLocaleString('en-IN')}</td><td><span class="bx ${q.status==='Active'?'bx-g':'bx-b'}">${q.status}</span></td></tr>`).join('')}</tbody></table></div>`;
+}
+
+// ── Follow Up ────────────────────────────────────────────────────────────────────
+function renderFollowUp(c){
+  c.innerHTML=`<div class="bc">CRM → <span>Sales Follow Up</span></div>
+  <div class="ph"><div class="pt">Sales Follow Up</div><button class="btn btn-primary btn-sm" onclick="openFU(-1)"><i class="ti ti-plus" aria-hidden="true"></i> Add Follow Up</button></div>
+  <div class="card"><table class="dt"><thead><tr><th>Date</th><th>Customer</th><th>Contact</th><th>Notes</th><th>Next Action</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody id="fuBody"></tbody></table></div>`;
+  renderFURows();
+}
+function renderFURows(){
+  const tb=document.getElementById('fuBody');if(!tb)return;
+  tb.innerHTML=followUps.map((f,i)=>`<tr><td>${f.date}</td><td>${f.customer}</td><td>${f.phone}</td><td>${f.notes}</td><td>${f.action}</td>
+  <td><span class="bx ${f.status==='Open'?'bx-g':f.status==='Pending'?'bx-o':'bx-b'}">${f.status}</span></td>
+  <td><div class="ab"><button class="btn btn-secondary btn-sm" onclick="openFU(${i})"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="btn btn-danger btn-sm" onclick="followUps.splice(${i},1);renderFollowUp(MC())"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No follow-ups. Add one.</td></tr>';
+}
+function openFU(idx){
+  editFUIdx=idx;
+  const f=idx>=0?followUps[idx]:{};
+  document.getElementById('mFUTitle').textContent=idx>=0?'Edit Follow Up':'Add Follow Up';
+  document.getElementById('fuDate').value=f.date||new Date().toISOString().split('T')[0];
+  document.getElementById('fuStatus').value=f.status||'Open';
+  document.getElementById('fuCust').value=f.customer||'';
+  document.getElementById('fuPhone').value=f.phone||'';
+  document.getElementById('fuNotes').value=f.notes||'';
+  document.getElementById('fuAction').value=f.action||'';
+  openModal('mFU');
+}
+function saveFU(){
+  const f={date:document.getElementById('fuDate').value,status:document.getElementById('fuStatus').value,customer:document.getElementById('fuCust').value.trim(),phone:document.getElementById('fuPhone').value.trim(),notes:document.getElementById('fuNotes').value,action:document.getElementById('fuAction').value.trim()};
+  if(!f.customer){alert('Customer name required');return;}
+  if(editFUIdx>=0)followUps[editFUIdx]=f;else followUps.push(f);
+  closeModal('mFU');renderFollowUp(MC());
+}
+
+// ── Search Quotation / Invoice ───────────────────────────────────────────────────
+function renderSearchDoc(c,type){
+  const isQ=type==='quotation';
+  const list=isQ?quotations:invoices;
+  const label=isQ?'Quotation':'Invoice';
+  c.innerHTML=`<div class="bc">${isQ?'CRM → Quotation':'Accounts → Invoicing'} → <span>Search ${label}</span></div>
+  <div class="ph"><div class="pt">${label}s</div><button class="btn btn-primary btn-sm" onclick="goTo('create${label}')"><i class="ti ti-plus" aria-hidden="true"></i> Create ${label}</button></div>
+  <div style="display:flex;gap:8px;margin-bottom:12px"><input id="srchQ" style="max-width:240px" placeholder="Search customer / number..." oninput="filterSrch('${type}')"/>
+  <select id="srchS" onchange="filterSrch('${type}')" style="max-width:130px"><option value="">All Status</option><option>Active</option><option>Draft</option></select></div>
+  <div class="card"><table class="dt"><thead><tr><th>${label} No</th><th>Date</th><th>Validity</th><th>Customer</th><th>Amount (₹)</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody id="docBody_${type}"></tbody></table></div>`;
+  renderDocRows(type);
+}
+function filterSrch(type){
+  const s=(document.getElementById('srchQ').value||'').toLowerCase();
+  const st=document.getElementById('srchS').value;
+  const list=(type==='quotation'?quotations:invoices).filter(q=>(!s||q.id.toLowerCase().includes(s)||q.customer.toLowerCase().includes(s))&&(!st||q.status===st));
+  renderDocRows(type,list);
+}
+function renderDocRows(type,list){
+  if(!list)list=type==='quotation'?quotations:invoices;
+  const tb=document.getElementById(`docBody_${type}`);if(!tb)return;
+  tb.innerHTML=list.map(q=>{const i=type==='quotation'?quotations.indexOf(q):invoices.indexOf(q);return`<tr>
+    <td><span class="qbadge">${q.id}</span></td><td>${q.date}</td><td>${q.validity}</td><td>${q.customer}</td>
+    <td style="color:#00c9a7;font-weight:600">₹${q.total.toLocaleString('en-IN')}</td>
+    <td><span class="bx ${q.status==='Active'?'bx-g':'bx-b'}">${q.status}</span></td>
+    <td><div class="ab"><button class="btn btn-secondary btn-sm" onclick="editDoc('${type}',${i})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+    <button class="btn btn-secondary btn-sm" onclick="doPrint('${type}',${i})"><i class="ti ti-download" aria-hidden="true"></i></button>
+    <button class="btn btn-danger btn-sm" onclick="deleteDoc('${type}',${i})"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td></tr>`;}).join('')||'<tr><td colspan="7" class="empty">No records found.</td></tr>';
+}
+function editDoc(type,idx){const d=(type==='quotation'?quotations:invoices)[idx];items=[...d.items];renderDocForm(MC(),type,d,idx);}
+function deleteDoc(type,idx){if(confirm('Delete?')){if(type==='quotation')quotations.splice(idx,1);else invoices.splice(idx,1);renderSearchDoc(MC(),type);}}
+
+// ── Convert ─────────────────────────────────────────────────────────────────────
+function renderConvert(c){
+  c.innerHTML=`<div class="bc">Accounts → Invoicing → <span>Convert from Quotation</span></div>
+  <div class="pt" style="margin-bottom:14px">Select a Quotation to convert to Invoice</div>
+  <div class="card"><table class="dt"><thead><tr><th>Quote No</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+  <tbody>${quotations.map((q,i)=>`<tr><td><span class="qbadge">${q.id}</span></td><td>${q.customer}</td><td>${q.date}</td><td style="color:#00c9a7">₹${q.total.toLocaleString('en-IN')}</td><td><span class="bx ${q.status==='Active'?'bx-g':'bx-b'}">${q.status}</span></td><td><button class="btn btn-primary btn-sm" onclick="convertDoc(${i})">Convert →</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+function convertDoc(idx){
+  const q=JSON.parse(JSON.stringify(quotations[idx]));
+  const n=invoices.length+1,y=new Date().getFullYear();
+  q.id=`INV-${y}-${String(n).padStart(3,'0')}`;
+  invoices.push(q);items=[...q.items];
+  renderDocForm(MC(),'invoice',invoices[invoices.length-1],invoices.length-1);
+}
+
+// ── Document Form ────────────────────────────────────────────────────────────────
+function bkOptions(selected){return banks.map(b=>`<option value="${b.name}" ${b.name===selected?'selected':''}>${b.name} — ${b.acc.slice(-4)}</option>`).join('');}
+function renderDocForm(c,type,data,editIdx){
+  items=data?[...data.items]:[];
+  const isQ=type==='quotation',label=isQ?'Quotation':'Invoice';
+  const y=new Date().getFullYear(),len=isQ?quotations.length:invoices.length;
+  const autoN=`${isQ?'QT':'INV'}-${y}-${String(len+(editIdx<0?1:0)).padStart(3,'0')}`;
+  const docN=editIdx>=0?data.id:autoN;
+  const today=new Date().toISOString().split('T')[0];
+  const val=editIdx>=0?data.validity:new Date(Date.now()+15*864e5).toISOString().split('T')[0];
+  const selBank=data?data.bank:'';
+  c.innerHTML=`<div class="bc">${isQ?'CRM → Quotation':'Accounts → Invoicing'} → <span>${editIdx>=0?'Edit':'Create'} ${label}</span></div>
+  <div class="ph"><div style="display:flex;align-items:center;gap:10px"><div class="pt">${editIdx>=0?'Edit':'New'} ${label}</div><span class="qbadge">${docN}</span></div>
+  <button class="btn btn-secondary btn-sm" onclick="goTo('${isQ?'searchQuotation':'searchInvoice'}')">← Back</button></div>
+  <div class="card"><div class="ctitle">${label} Details</div>
+  <div class="fg3"><div><label>${label} No</label><input id="dNum" value="${docN}" readonly style="color:#00c9a7"/></div>
+  <div><label>Date</label><input type="date" id="dDate" value="${data?data.date:today}"/></div>
+  <div><label>Validity / Due Date</label><input type="date" id="dVal" value="${val}"/></div></div></div>
+  <div class="card"><div class="ctitle">Customer Details</div>
+  <div class="fg2"><div><label>Customer Name</label><input id="dCust" placeholder="Customer name" value="${data?data.customer:''}"/></div>
+  <div><label>GSTIN</label><input id="dGstin" placeholder="33XXXXXXXX" value="${data?(data.gstin||''):''}"/></div>
+  <div class="s2"><label>Address</label><input id="dAddr" placeholder="Full address" value="${data?data.address:''}"/></div></div></div>
+  <div class="card">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div class="ctitle" style="margin:0">Line Items</div><button class="btn btn-primary btn-sm" onclick="openModal('mItem');editItemIdx=-1"><i class="ti ti-plus" aria-hidden="true"></i> Add Item</button></div>
+  <div id="iGrid"></div><div id="iTotals" style="background:#0a0f1e;border-radius:6px;padding:12px;margin-top:10px"></div></div>
+  <div class="card"><div class="ctitle">Bank Details</div>
+  <div class="fg2"><div><label>Select Bank Account</label><select id="dBank">${banks.length?'<option value="">-- Select Bank --</option>'+bkOptions(selBank):'<option value="">No bank accounts. Add under Admin → Bank Details</option>'}</select></div></div></div>
+  <div class="card"><div class="ctitle">Notes & Terms</div>
+  <div class="fg2"><div><label>Notes</label><textarea id="dNotes">${data?(data.notes||''):'Delivery within 7 working days.'}</textarea></div>
+  <div><label>Terms & Conditions</label><textarea id="dTerms">${data?(data.terms||''):'1. Warranty from manufacturer only.\n2. 50% advance, balance on delivery.\n3. Prices subject to change.'}</textarea></div></div></div>
+  <div class="fa">
+    <button class="btn btn-secondary" onclick="goTo('${isQ?'searchQuotation':'searchInvoice'}')">Cancel</button>
+    <button class="btn btn-secondary" onclick="saveDoc('${type}',${editIdx},'Draft')"><i class="ti ti-device-floppy" aria-hidden="true"></i> Save Draft</button>
+    <button class="btn btn-primary" onclick="saveDoc('${type}',${editIdx},'Active')"><i class="ti ti-check" aria-hidden="true"></i> Save & Activate</button>
+    <button class="btn btn-primary" style="background:linear-gradient(135deg,#1e3a5f,#0ea5e9)" onclick="saveAndPrint('${type}',${editIdx})"><i class="ti ti-download" aria-hidden="true"></i> Save & Print PDF</button>
+    <button class="btn btn-mail" onclick="saveAndEmail('${type}',${editIdx})"><i class="ti ti-mail" aria-hidden="true"></i> Email</button>
+    <button class="btn btn-wa" onclick="saveAndWA('${type}',${editIdx})"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i> WhatsApp</button>
+  </div>`;
+  renderItemsGrid();
+}
+
+function renderItemsGrid(){
+  const g=document.getElementById('iGrid'),t=document.getElementById('iTotals');
+  if(!g)return;
+  if(!items.length){g.innerHTML=`<div class="empty"><i class="ti ti-inbox" style="font-size:28px;display:block;margin-bottom:6px;color:#334155" aria-hidden="true"></i>No items yet. Click "Add Item".</div>`;if(t)t.innerHTML='';return;}
+  g.innerHTML=`<table class="it"><thead><tr><th>#</th><th>Description</th><th>HSN</th><th>Qty</th><th>Unit</th><th>Rate (₹)</th><th>GST</th><th>Amount (₹)</th><th></th></tr></thead>
+  <tbody>${items.map((it,i)=>`<tr><td>${i+1}</td><td>${it.desc}</td><td style="color:#64748b">${it.hsn||'-'}</td><td>${it.qty}</td><td style="color:#64748b">${it.unit}</td>
+  <td>₹${it.rate.toLocaleString('en-IN')}</td><td style="color:#64748b">${it.gst}%</td><td style="color:#00c9a7;font-weight:700">₹${it.total.toLocaleString('en-IN')}</td>
+  <td><div class="ab"><button class="btn btn-secondary btn-sm" onclick="openModal('mItem');editItemIdx=${i};fillItem(${i})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+  <button class="btn btn-danger btn-sm" onclick="items.splice(${i},1);renderItemsGrid()"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td></tr>`).join('')}</tbody></table>`;
+  if(t){const sub=items.reduce((a,it)=>a+it.qty*it.rate,0);const gst=items.reduce((a,it)=>a+it.qty*it.rate*(it.gst/100),0);
+  t.innerHTML=`<div class="tr"><span>Taxable Amount</span><span>₹${sub.toFixed(2)}</span></div>
+  <div class="tr"><span>CGST</span><span>₹${(gst/2).toFixed(2)}</span></div>
+  <div class="tr"><span>SGST</span><span>₹${(gst/2).toFixed(2)}</span></div>
+  <div class="tr grand"><span>Grand Total</span><span>₹${(sub+gst).toFixed(2)}</span></div>`;}
+}
+function fillItem(i){const it=items[i];document.getElementById('iDesc').value=it.desc;document.getElementById('iHsn').value=it.hsn||'';document.getElementById('iQty').value=it.qty;document.getElementById('iUnit').value=it.unit;document.getElementById('iRate').value=it.rate;document.getElementById('iGst').value=it.gst;document.getElementById('iTotal').value=it.total;}
+
+// ── Item Modal ───────────────────────────────────────────────────────────────────
+function calcIT(){const q=parseFloat(document.getElementById('iQty').value)||0,r=parseFloat(document.getElementById('iRate').value)||0,g=parseFloat(document.getElementById('iGst').value)||0;document.getElementById('iTotal').value=((q*r)*(1+g/100)).toFixed(2);}
+function saveItem(){
+  const desc=document.getElementById('iDesc').value.trim();if(!desc){alert('Description required');return;}
+  const qty=parseFloat(document.getElementById('iQty').value)||1,rate=parseFloat(document.getElementById('iRate').value)||0,gst=parseFloat(document.getElementById('iGst').value)||0;
+  const it={desc,hsn:document.getElementById('iHsn').value.trim(),qty,unit:document.getElementById('iUnit').value,rate,gst,total:parseFloat((qty*rate*(1+gst/100)).toFixed(2))};
+  if(editItemIdx>=0&&editItemIdx<items.length)items[editItemIdx]=it;else items.push(it);
+  closeModal('mItem');renderItemsGrid();
+}
+
+// ── Save Doc ─────────────────────────────────────────────────────────────────────
+function collectDoc(type,idx,status){
+  const num=document.getElementById('dNum').value,date=document.getElementById('dDate').value,val=document.getElementById('dVal').value;
+  const customer=document.getElementById('dCust').value.trim();if(!customer){alert('Customer name required');return null;}
+  const address=document.getElementById('dAddr').value.trim(),gstin=document.getElementById('dGstin').value;
+  const notes=document.getElementById('dNotes').value,terms=document.getElementById('dTerms').value;
+  const bank=document.getElementById('dBank').value;
+  const sub=items.reduce((a,it)=>a+it.qty*it.rate,0),gst=items.reduce((a,it)=>a+it.qty*it.rate*(it.gst/100),0);
+  const doc={id:num,date,validity:val,customer,address,gstin,notes,terms,bank,status,items:[...items],total:parseFloat((sub+gst).toFixed(2))};
+  if(type==='quotation'){if(idx>=0)quotations[idx]=doc;else quotations.push(doc);}
+  else{if(idx>=0)invoices[idx]=doc;else invoices.push(doc);}
+  return doc;
+}
+function saveDoc(type,idx,status){const d=collectDoc(type,idx,status);if(!d)return;alert(`${type==='quotation'?'Quotation':'Invoice'} ${d.id} saved!`);goTo(type==='quotation'?'searchQuotation':'searchInvoice');}
+function saveAndPrint(type,idx){const d=collectDoc(type,idx,'Active');if(!d)return;doPrintDoc(d,type==='quotation'?'Quotation':'Invoice');}
+function saveAndEmail(type,idx){
+  const d=collectDoc(type,idx,'Active');if(!d)return;
+  const label=type==='quotation'?'Quotation':'Invoice';
+  const sub=encodeURIComponent(`${label} ${d.id} from NexGen Corenova Tech Solutions`);
+  const body=encodeURIComponent(`Dear ${d.customer},\n\nPlease find attached ${label} ${d.id} for ₹${d.total.toLocaleString('en-IN')} dated ${d.date}.\n\nValidity: ${d.validity}\n\nFor any queries, please contact us.\n\nBest regards,\nNexGen Corenova Tech Solutions\n+91-8637483026 | admin@nexgencorenova.tech`);
+  window.open(`mailto:?subject=${sub}&body=${body}`);
+}
+function saveAndWA(type,idx){
+  const d=collectDoc(type,idx,'Active');if(!d)return;
+  const label=type==='quotation'?'Quotation':'Invoice';
+  const msg=encodeURIComponent(`Hello ${d.customer},\n\nGreetings from NexGen Corenova Tech Solutions!\n\nPlease find below the details for ${label} *${d.id}*:\n\n📅 Date: ${d.date}\n📋 Valid Until: ${d.validity}\n💰 Total Amount: ₹${d.total.toLocaleString('en-IN')}\n\nPlease confirm the order at your earliest convenience.\n\nBest regards,\nNexGen Corenova Tech Solutions\n📞 +91-8637483026`);
+  window.open(`https://wa.me/?text=${msg}`);
+}
+function doPrint(type,idx){const d=(type==='quotation'?quotations:invoices)[idx];doPrintDoc(d,type==='quotation'?'Quotation':'Invoice');}
+
+// ── Print HTML ───────────────────────────────────────────────────────────────────
+function n2w(n){
+  const ones=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'],tens=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  function h(n){if(n<20)return ones[n];if(n<100)return tens[Math.floor(n/10)]+(n%10?' '+ones[n%10]:'');return ones[Math.floor(n/100)]+' Hundred'+(n%100?' '+h(n%100):'');}
+  let r='';if(n>=10000000){r+=h(Math.floor(n/10000000))+' Crore ';n%=10000000;}if(n>=100000){r+=h(Math.floor(n/100000))+' Lakh ';n%=100000;}if(n>=1000){r+=h(Math.floor(n/1000))+' Thousand ';n%=1000;}if(n>0)r+=h(n);return r.trim()+' Only';
+}
+function getDefCo(label){const list=label==='Quotation'?quotationCos:invoiceCos;return list.find(c=>c.isDefault)||list[0]||{name:'NexGen Corenova Tech Solutions',address:'Chennai, TN',gst:'',phone:'+91-8637483026',email:'admin@nexgencorenova.tech',web:'nexgencorenova.tech'};}
+function getBank(name){return banks.find(b=>b.name===name)||banks.find(b=>b.isDefault)||banks[0]||null;}
+function buildPDF(doc,label){
+  const co=getDefCo(label);
+  const bk=doc.bank?getBank(doc.bank):(banks.find(b=>b.isDefault)||banks[0]||null);
+  const sub=doc.items.reduce((a,it)=>a+it.qty*it.rate,0);
+  const gst=doc.items.reduce((a,it)=>a+it.qty*it.rate*(it.gst/100),0);
+  const grand=sub+gst;const cgst=gst/2,sgst=gst/2;
+  const rows=doc.items.map((it,i)=>`<tr>
+    <td style="border:1px solid #dde;padding:5px 7px;text-align:center">${i+1}</td>
+    <td style="border:1px solid #dde;padding:5px 7px">${it.desc}</td>
+    <td style="border:1px solid #dde;padding:5px 7px;text-align:center">${it.hsn||'-'}</td>
+    <td style="border:1px solid #dde;padding:5px 7px;text-align:center">${it.qty}</td>
+    <td style="border:1px solid #dde;padding:5px 7px;text-align:center">${it.unit}</td>
+    <td style="border:1px solid #dde;padding:5px 7px;text-align:right">₹${it.rate.toLocaleString('en-IN')}</td>
+    <td style="border:1px solid #dde;padding:5px 7px;text-align:right">₹${(it.qty*it.rate).toLocaleString('en-IN')}</td>
+    <td style="border:1px solid #dde;padding:5px 7px;text-align:center">${it.gst/2}%</td>
+    <td style="border:1px solid #dde;padding:5px 7px;text-align:right">₹${(it.qty*it.rate*it.gst/200).toFixed(2)}</td>
+    <td style="border:1px solid #dde;padding:5px 7px;text-align:center">${it.gst/2}%</td>
+    <td style="border:1px solid #dde;padding:5px 7px;text-align:right">₹${(it.qty*it.rate*it.gst/200).toFixed(2)}</td>
+  </tr>`).join('');
+  const bankHTML=bk?`<div style="margin-bottom:12px;border:1px solid #dde;border-radius:6px;padding:10px;font-size:11px"><b style="color:#1a3a8a;font-size:12px">Bank Details</b><br/>
+  <table style="margin-top:6px;border-collapse:collapse;width:auto"><tbody>
+  <tr><td style="padding:2px 12px 2px 0;color:#555">Bank Name:</td><td><b>${bk.name}</b></td></tr>
+  <tr><td style="padding:2px 12px 2px 0;color:#555">Account Holder:</td><td>${bk.holder}</td></tr>
+  <tr><td style="padding:2px 12px 2px 0;color:#555">Account No:</td><td><b>${bk.acc}</b></td></tr>
+  <tr><td style="padding:2px 12px 2px 0;color:#555">IFSC Code:</td><td>${bk.ifsc}</td></tr>
+  <tr><td style="padding:2px 12px 2px 0;color:#555">Account Type:</td><td>${bk.type}</td></tr>
+  <tr><td style="padding:2px 12px 2px 0;color:#555">Branch:</td><td>${bk.branch}</td></tr>
+  </tbody></table></div>`:'';
+  return `<div style="background:#fff;color:#1a1a2e;padding:24px 28px;font-family:Arial,sans-serif;font-size:11px;max-width:940px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:14px;border-bottom:2px solid #1a3a8a;padding-bottom:12px;margin-bottom:12px">
+    <img src="${LOGO}" style="width:80px;height:auto;border-radius:5px"/>
+    <div style="flex:1;text-align:center">
+      <div style="font-size:16px;font-weight:700;color:#1a3a8a">${co.name}</div>
+      <div style="color:#555;margin-top:2px">${co.address}</div>
+      <div style="color:#555">${co.phone} | ${co.email} | ${co.web}</div>
+      ${co.gst?`<div style="color:#555">GSTIN: ${co.gst}</div>`:''}
+    </div>
+    <div style="font-size:15px;font-weight:700;color:#0f766e;text-align:right">${label.toUpperCase()}</div>
+  </div>
+  <div style="display:flex;gap:14px;margin-bottom:12px">
+    <div style="flex:1;border:1px solid #dde;border-radius:5px;padding:9px">
+      <div style="font-weight:700;color:#1a3a8a;font-size:10px;text-transform:uppercase;margin-bottom:5px">Billed To</div>
+      <div style="font-weight:600">${doc.customer}</div>
+      <div style="color:#555">${doc.address}</div>
+      ${doc.gstin?`<div style="margin-top:3px;font-size:10px">GSTIN: <b>${doc.gstin}</b></div>`:''}
+    </div>
+    <div style="min-width:190px;border:1px solid #dde;border-radius:5px;padding:9px">
+      <table style="width:100%;font-size:11px;border-collapse:collapse"><tbody>
+      <tr><td style="color:#555;padding:2px 0">${label} No:</td><td style="text-align:right;font-weight:600;color:#1a3a8a">${doc.id}</td></tr>
+      <tr><td style="color:#555;padding:2px 0">Date:</td><td style="text-align:right">${doc.date}</td></tr>
+      <tr><td style="color:#555;padding:2px 0">Valid Until:</td><td style="text-align:right">${doc.validity}</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:10px;margin-bottom:10px">
+  <thead><tr style="background:#1a3a8a;color:#fff">
+  <th style="border:1px solid #2a4a9a;padding:6px 7px">#</th><th style="border:1px solid #2a4a9a;padding:6px 7px;text-align:left">Description</th>
+  <th style="border:1px solid #2a4a9a;padding:6px 7px">HSN</th><th style="border:1px solid #2a4a9a;padding:6px 7px">Qty</th>
+  <th style="border:1px solid #2a4a9a;padding:6px 7px">UOM</th><th style="border:1px solid #2a4a9a;padding:6px 7px">Rate</th>
+  <th style="border:1px solid #2a4a9a;padding:6px 7px">Taxable</th><th style="border:1px solid #2a4a9a;padding:6px 7px">CGST%</th>
+  <th style="border:1px solid #2a4a9a;padding:6px 7px">CGST</th><th style="border:1px solid #2a4a9a;padding:6px 7px">SGST%</th>
+  <th style="border:1px solid #2a4a9a;padding:6px 7px">SGST</th>
+  </tr></thead><tbody>${rows}</tbody></table>
+  <div style="display:flex;gap:14px;margin-bottom:10px;align-items:flex-start">
+    <div style="flex:1">${bankHTML}</div>
+    <div><table style="font-size:11px;border-collapse:collapse;min-width:230px">
+    <tr><td style="padding:3px 8px;color:#555">Taxable Amount:</td><td style="text-align:right;padding:3px 8px">₹${sub.toFixed(2)}</td></tr>
+    <tr><td style="padding:3px 8px;color:#555">Add CGST:</td><td style="text-align:right;padding:3px 8px">₹${cgst.toFixed(2)}</td></tr>
+    <tr><td style="padding:3px 8px;color:#555">Add SGST:</td><td style="text-align:right;padding:3px 8px">₹${sgst.toFixed(2)}</td></tr>
+    <tr style="background:#f0f9ff"><td style="padding:5px 8px;font-weight:700;border-top:2px solid #1a3a8a">Grand Total:</td><td style="padding:5px 8px;text-align:right;font-weight:700;color:#1a3a8a;border-top:2px solid #1a3a8a">₹${grand.toFixed(2)}</td></tr>
+    </table></div>
+  </div>
+  <div style="background:#f8fafc;border:1px solid #dde;border-radius:5px;padding:8px;margin-bottom:10px;font-size:11px"><b>Amount in Words:</b> ${n2w(Math.round(grand))}</div>
+  <div style="display:flex;gap:14px;margin-bottom:10px">
+    ${doc.notes?`<div style="flex:1;font-size:11px"><b style="color:#1a3a8a">Notes:</b><br/><span style="color:#555;white-space:pre-line">${doc.notes}</span></div>`:''}
+    ${doc.terms?`<div style="flex:1;font-size:11px"><b style="color:#1a3a8a">Terms & Conditions:</b><br/><span style="color:#555;white-space:pre-line">${doc.terms}</span></div>`:''}
+  </div>
+  <div style="display:flex;justify-content:flex-end;border-top:1px solid #dde;padding-top:10px">
+    <div style="text-align:center"><div style="width:120px;border-top:1px solid #333;margin-top:36px;padding-top:3px;font-size:10px;color:#555">Authorised Signatory</div>
+    <div style="font-size:11px;font-weight:600;color:#1a3a8a">${co.name}</div></div>
+  </div></div>`;
+}
+function doPrintDoc(doc,label){
+  const html=buildPDF(doc,label);
+  const win=window.open('','_blank','width=980,height=720');
+  if(!win){alert('Allow popups to download PDF');return;}
+  win.document.write(`<!DOCTYPE html><html><head><title>${doc.id}</title></head><body style="margin:0;padding:20px;background:#f5f5f5">${html}<br/><div style="text-align:center;margin-top:16px"><button onclick="window.print()" style="background:#1a3a8a;color:#fff;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-size:14px;margin-right:8px">🖨 Print / Save as PDF</button><button onclick="window.close()" style="background:#e2e8f0;color:#333;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-size:14px">Close</button></div></body></html>`);
+  win.document.close();
+}
+
+// ── Bank Details ─────────────────────────────────────────────────────────────────
+function renderBanks(c){
+  c.innerHTML=`<div class="bc">Admin → <span>Bank Details</span></div>
+  <div class="ph"><div class="pt">Bank Details</div><button class="btn btn-primary btn-sm" onclick="openBk(-1)"><i class="ti ti-plus" aria-hidden="true"></i> Add Bank Account</button></div>
+  <div class="card"><table class="dt"><thead><tr><th>Bank Name</th><th>Account Holder</th><th>Account No</th><th>IFSC</th><th>Type</th><th>Branch</th><th>Default</th><th>Actions</th></tr></thead>
+  <tbody id="bkBody"></tbody></table></div>`;
+  renderBkRows();
+}
+function renderBkRows(){
+  const tb=document.getElementById('bkBody');if(!tb)return;
+  tb.innerHTML=banks.map((b,i)=>`<tr><td style="font-weight:600">${b.name}</td><td>${b.holder}</td><td style="font-family:monospace">${b.acc}</td><td style="font-family:monospace">${b.ifsc}</td><td>${b.type}</td><td>${b.branch}</td>
+  <td>${b.isDefault?'<span class="bx bx-p">Default</span>':'—'}</td>
+  <td><div class="ab"><button class="btn btn-secondary btn-sm" onclick="openBk(${i})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+  <button class="btn btn-primary btn-sm" onclick="setDefBk(${i})">Set Default</button>
+  <button class="btn btn-danger btn-sm" onclick="banks.splice(${i},1);renderBanks(MC())"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td></tr>`).join('')||'<tr><td colspan="8" class="empty">No bank accounts yet. Add one.</td></tr>';
+}
+function openBk(idx){editBkIdx=idx;const b=idx>=0?banks[idx]:{};
+  document.getElementById('mBankTitle').textContent=idx>=0?'Edit Bank Account':'Add Bank Account';
+  document.getElementById('bkName').value=b.name||'';document.getElementById('bkHolder').value=b.holder||'';
+  document.getElementById('bkAcc').value=b.acc||'';document.getElementById('bkIfsc').value=b.ifsc||'';
+  document.getElementById('bkType').value=b.type||'Current';document.getElementById('bkBranch').value=b.branch||'';
+  document.getElementById('bkDef').checked=b.isDefault||false;openModal('mBank');
+}
+function saveBank(){
+  const name=document.getElementById('bkName').value.trim();if(!name){alert('Bank name required');return;}
+  const b={name,holder:document.getElementById('bkHolder').value.trim(),acc:document.getElementById('bkAcc').value.trim(),ifsc:document.getElementById('bkIfsc').value.trim(),type:document.getElementById('bkType').value,branch:document.getElementById('bkBranch').value.trim(),isDefault:document.getElementById('bkDef').checked};
+  if(b.isDefault)banks.forEach(bk=>bk.isDefault=false);
+  if(editBkIdx>=0)banks[editBkIdx]=b;else banks.push(b);
+  closeModal('mBank');renderBanks(MC());
+}
+function setDefBk(idx){banks.forEach((b,i)=>b.isDefault=i===idx);renderBkRows();}
+
+// ── Company Settings ──────────────────────────────────────────────────────────────
+function renderCoSetting(c,type){
+  coType=type;const list=type==='quotation'?quotationCos:invoiceCos;
+  const label=type==='quotation'?'Quotation Setting':'Invoice Setting';
+  c.innerHTML=`<div class="bc">Admin → Settings → <span>${label}</span></div>
+  <div class="ph"><div class="pt">${label}</div><button class="btn btn-primary btn-sm" onclick="openCo(-1)"><i class="ti ti-plus" aria-hidden="true"></i> Add Company</button></div>
+  <div class="card"><table class="dt"><thead><tr><th>Company Name</th><th>Address</th><th>GST</th><th>Default</th><th>Actions</th></tr></thead>
+  <tbody id="coBody"></tbody></table></div>`;
+  renderCoRows();
+}
+function renderCoRows(){
+  const list=coType==='quotation'?quotationCos:invoiceCos;
+  const tb=document.getElementById('coBody');if(!tb)return;
+  tb.innerHTML=list.map((co,i)=>`<tr><td style="font-weight:600">${co.name}</td><td style="color:#94a3b8;font-size:11px">${co.address}</td><td style="font-size:11px">${co.gst||'—'}</td>
+  <td>${co.isDefault?'<span class="bx bx-p">Default</span>':'—'}</td>
+  <td><div class="ab"><button class="btn btn-secondary btn-sm" onclick="openCo(${i})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+  <button class="btn btn-primary btn-sm" onclick="setDefCo(${i})">Set Default</button>
+  <button class="btn btn-danger btn-sm" onclick="(coType==='quotation'?quotationCos:invoiceCos).splice(${i},1);renderCoRows()"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td></tr>`).join('')||'<tr><td colspan="5" class="empty">No companies added yet.</td></tr>';
+}
+function openCo(idx){editCoIdx=idx;const co=idx>=0?(coType==='quotation'?quotationCos:invoiceCos)[idx]:{};
+  document.getElementById('mCoTitle').textContent=idx>=0?'Edit Company':'Add Company';
+  document.getElementById('coName').value=co.name||'';document.getElementById('coAddr').value=co.address||'';
+  document.getElementById('coGst').value=co.gst||'';document.getElementById('coPhone').value=co.phone||'';
+  document.getElementById('coEmail').value=co.email||'';document.getElementById('coWeb').value=co.web||'';
+  document.getElementById('coDef').checked=co.isDefault||false;openModal('mCo');
+}
+function saveCo(){
+  const name=document.getElementById('coName').value.trim();if(!name){alert('Company name required');return;}
+  const co={name,address:document.getElementById('coAddr').value.trim(),gst:document.getElementById('coGst').value.trim(),phone:document.getElementById('coPhone').value.trim(),email:document.getElementById('coEmail').value.trim(),web:document.getElementById('coWeb').value.trim(),isDefault:document.getElementById('coDef').checked};
+  const list=coType==='quotation'?quotationCos:invoiceCos;
+  if(co.isDefault)list.forEach(c=>c.isDefault=false);
+  if(editCoIdx>=0)list[editCoIdx]=co;else list.push(co);
+  closeModal('mCo');renderCoRows();
+}
+function setDefCo(idx){(coType==='quotation'?quotationCos:invoiceCos).forEach((c,i)=>c.isDefault=i===idx);renderCoRows();}
+
+// ── Customers ───────────────────────────────────────────────────────────────────
+function renderCustomers(c){
+  c.innerHTML=`<div class="bc">Accounts → <span>Customers</span></div>
+  <div class="ph"><div class="pt">Customers</div><button class="btn btn-primary btn-sm" onclick="openCust(-1)"><i class="ti ti-plus" aria-hidden="true"></i> Add Customer</button></div>
+  <div class="card"><table class="dt"><thead><tr><th>Company Name</th><th>Contact</th><th>Phone</th><th>Email</th><th>GSTIN</th><th>Actions</th></tr></thead>
+  <tbody id="custBody"></tbody></table></div>`;
+  renderCustRows();
+}
+function renderCustRows(){
+  const tb=document.getElementById('custBody');if(!tb)return;
+  tb.innerHTML=customers.map((cu,i)=>`<tr><td style="font-weight:600">${cu.name}</td><td>${cu.contact}</td><td>${cu.phone}</td><td>${cu.email}</td><td style="font-size:11px">${cu.gst||'—'}</td>
+  <td><div class="ab"><button class="btn btn-secondary btn-sm" onclick="openCust(${i})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+  <button class="btn btn-danger btn-sm" onclick="customers.splice(${i},1);renderCustomers(MC())"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td></tr>`).join('')||'<tr><td colspan="6" class="empty">No customers. Add one.</td></tr>';
+}
+function openCust(idx){editCustIdx=idx;const cu=idx>=0?customers[idx]:{};
+  document.getElementById('mCustTitle').textContent=idx>=0?'Edit Customer':'Add Customer';
+  document.getElementById('cuName').value=cu.name||'';document.getElementById('cuContact').value=cu.contact||'';
+  document.getElementById('cuPhone').value=cu.phone||'';document.getElementById('cuEmail').value=cu.email||'';
+  document.getElementById('cuGst').value=cu.gst||'';document.getElementById('cuAddr').value=cu.address||'';
+  openModal('mCust');
+}
+function saveCust(){
+  const name=document.getElementById('cuName').value.trim();if(!name){alert('Customer name required');return;}
+  const cu={name,contact:document.getElementById('cuContact').value.trim(),phone:document.getElementById('cuPhone').value.trim(),email:document.getElementById('cuEmail').value.trim(),gst:document.getElementById('cuGst').value.trim(),address:document.getElementById('cuAddr').value.trim()};
+  if(editCustIdx>=0)customers[editCustIdx]=cu;else customers.push(cu);
+  closeModal('mCust');renderCustomers(MC());
+}
+
+// ── Payments ────────────────────────────────────────────────────────────────────
+function renderPayments(c){
+  c.innerHTML=`<div class="bc">Accounts → <span>Payments</span></div>
+  <div class="ph"><div class="pt">Payments</div><button class="btn btn-primary btn-sm" onclick="openPay(-1)"><i class="ti ti-plus" aria-hidden="true"></i> Add Payment</button></div>
+  <div class="card"><table class="dt"><thead><tr><th>Date</th><th>Customer</th><th>Invoice Ref</th><th>Amount (₹)</th><th>Mode</th><th>Actions</th></tr></thead>
+  <tbody id="payBody"></tbody></table></div>`;
+  renderPayRows();
+}
+function renderPayRows(){
+  const tb=document.getElementById('payBody');if(!tb)return;
+  tb.innerHTML=payments.map((p,i)=>`<tr><td>${p.date}</td><td>${p.customer}</td><td><span class="qbadge">${p.ref}</span></td>
+  <td style="color:#00c9a7;font-weight:600">₹${parseFloat(p.amount).toLocaleString('en-IN')}</td><td>${p.mode}</td>
+  <td><div class="ab"><button class="btn btn-secondary btn-sm" onclick="openPay(${i})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+  <button class="btn btn-danger btn-sm" onclick="payments.splice(${i},1);renderPayments(MC())"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td></tr>`).join('')||'<tr><td colspan="6" class="empty">No payment records. Add one.</td></tr>';
+}
+function openPay(idx){editPayIdx=idx;const p=idx>=0?payments[idx]:{};
+  document.getElementById('mPayTitle').textContent=idx>=0?'Edit Payment':'Add Payment';
+  document.getElementById('pyDate').value=p.date||new Date().toISOString().split('T')[0];
+  document.getElementById('pyAmt').value=p.amount||'';document.getElementById('pyCust').value=p.customer||'';
+  document.getElementById('pyRef').value=p.ref||'';document.getElementById('pyMode').value=p.mode||'Bank Transfer';
+  document.getElementById('pyNotes').value=p.notes||'';openModal('mPay');
+}
+function savePay(){
+  const cust=document.getElementById('pyCust').value.trim();if(!cust){alert('Customer required');return;}
+  const p={date:document.getElementById('pyDate').value,amount:parseFloat(document.getElementById('pyAmt').value)||0,customer:cust,ref:document.getElementById('pyRef').value.trim(),mode:document.getElementById('pyMode').value,notes:document.getElementById('pyNotes').value};
+  if(editPayIdx>=0)payments[editPayIdx]=p;else payments.push(p);
+  closeModal('mPay');renderPayments(MC());
+}
+
+// ── Users ───────────────────────────────────────────────────────────────────────
+function renderUsers(c){
+  c.innerHTML=`<div class="bc">Admin → <span>Users</span></div>
+  <div class="ph"><div class="pt">Users</div><button class="btn btn-primary btn-sm" onclick="openUser(-1)"><i class="ti ti-plus" aria-hidden="true"></i> Add User</button></div>
+  <div class="card"><table class="dt"><thead><tr><th>Name</th><th>Email (Login)</th><th>Role</th><th>Phone</th><th>Actions</th></tr></thead>
+  <tbody id="userBody"></tbody></table></div>`;
+  renderUserRows();
+}
+function renderUserRows(){
+  const tb=document.getElementById('userBody');if(!tb)return;
+  tb.innerHTML=users.map((u,i)=>`<tr><td style="font-weight:600">${u.name}</td><td>${u.email}</td><td><span class="bx ${u.role==='Admin'?'bx-p':u.role==='Manager'?'bx-g':'bx-b'}">${u.role}</span></td><td>${u.phone||'—'}</td>
+  <td><div class="ab"><button class="btn btn-secondary btn-sm" onclick="openUser(${i})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+  ${users.length>1?`<button class="btn btn-danger btn-sm" onclick="users.splice(${i},1);renderUsers(MC())"><i class="ti ti-trash" aria-hidden="true"></i></button>`:''}</div></td></tr>`).join('');
+}
+function openUser(idx){editUserIdx=idx;const u=idx>=0?users[idx]:{};
+  document.getElementById('mUserTitle').textContent=idx>=0?'Edit User':'Add User';
+  document.getElementById('usName').value=u.name||'';document.getElementById('usRole').value=u.role||'Admin';
+  document.getElementById('usEmail').value=u.email||'';document.getElementById('usPass').value='';
+  document.getElementById('usPhone').value=u.phone||'';openModal('mUser');
+}
+function saveUser(){
+  const name=document.getElementById('usName').value.trim(),email=document.getElementById('usEmail').value.trim();
+  const pass=document.getElementById('usPass').value;
+  if(!name||!email){alert('Name and email required');return;}
+  if(editUserIdx<0&&!pass){alert('Password required for new user');return;}
+  const u={name,email,role:document.getElementById('usRole').value,phone:document.getElementById('usPhone').value.trim()};
+  if(pass)u.pass=pass;else if(editUserIdx>=0)u.pass=users[editUserIdx].pass;
+  if(editUserIdx>=0)users[editUserIdx]=u;else users.push(u);
+  closeModal('mUser');renderUsers(MC());
+}
+
+// ── Modal helpers ────────────────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// Init
+renderDashboard(MC());
+</script>
